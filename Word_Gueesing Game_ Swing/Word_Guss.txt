@@ -1,0 +1,132 @@
+import javax.swing.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyAdapter;
+
+public class WordGuesss {
+
+    JFrame jFrame;
+    JTextField jTextField;
+    JButton jButton1;
+    JButton jButton2;
+    JLabel jLabel1;
+    JLabel jLabel2;
+
+    JLabel jLabel3;
+
+    String[] words = {"Apple", "Mango", "Papaya", "Elephant", "Appointment", "Woman"};
+    int index = -1;
+
+    public WordGuesss () {
+        jFrame = new JFrame("Word Guessing Game");
+        jFrame.setLayout(null);
+        jFrame.setSize(450, 450);
+        jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        jTextField = new JTextField("");
+        jTextField.setBounds(120, 180, 180, 30);
+        jTextField.setHorizontalAlignment(JTextField.CENTER);
+        jFrame.add(jTextField);
+
+        jButton1 = new JButton("Next");
+        jButton1.setBounds(60, 250, 150, 30);
+        jFrame.add(jButton1);
+
+        jButton2 = new JButton("Start");
+        jButton2.setBounds(216, 250, 150, 30);
+        jFrame.add(jButton2);
+
+        jLabel1 = new JLabel("");
+        jLabel1.setBounds(83, 30, 300, 35);
+        jFrame.add(jLabel1);
+
+        jLabel3 = new JLabel("");
+        jLabel3.setBounds(110, 65, 300, 25);
+        jFrame.add(jLabel3);
+
+
+
+        jLabel2 = new JLabel("words");
+        jLabel2.setBounds(170, 110, 250, 35);
+        jLabel2.setFont(new Font("word", Font.PLAIN, 32));
+        jFrame.add(jLabel2);
+
+        jFrame.setVisible(true);
+
+        jButton1.addActionListener(e -> checkWord());
+
+        jButton2.addActionListener(e -> startGame());
+
+        jTextField.addKeyListener(new KeyAdapter() {
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    checkWord();
+                }
+            }
+        });
+    }
+
+    public void startGame() {
+        index = 0;
+        jTextField.setText("");
+        jButton1.setEnabled(true);
+        jButton2.setEnabled(false);
+        jLabel1.setText("");
+        displayWord();
+    }
+
+    public void displayWord() {
+        if (index == -1) {
+            jLabel2.setText("words");
+            jTextField.setText("------Guess-----");
+        } else {
+            String word = words[index];
+            StringBuilder newText = new StringBuilder(word);
+
+
+            // Ensure pos is a unique position to replace with an underscore.
+            int pos;
+            do {
+                pos = (int) (Math.random() * word.length());
+            } while (newText.charAt(pos) == '_');
+
+            newText.setCharAt(pos, '_');
+
+            jLabel2.setText(newText.toString());
+        }
+    }
+
+    public void checkWord() {
+        String guessedWord = jTextField.getText().trim();
+        if (guessedWord.equalsIgnoreCase(words[index])) {
+            jLabel1.setText("Congratulation! Correct Word");
+            jLabel3.setText("  "+"Again Try to next Word");
+            jLabel3.setFont(new Font("JLabel3",Font.PLAIN,18));
+            jLabel1.setFont(new Font("JLabel1",Font.PLAIN,20));
+            jLabel1.setForeground(Color.GREEN);
+        } else {
+            jLabel1.setText("       " +words[index]+" "+"is correct word");
+            jLabel3.setText("   "+"Again Try to next Word");
+            jLabel1.setFont(new Font("JLabel1",Font.PLAIN,20));
+//            jTextField.setEnabled(true);
+            jLabel1.setForeground(Color.BLUE);
+        }
+
+        if (index == words.length - 1) {
+            jButton1.setEnabled(false);
+            jButton2.setEnabled(true);
+        } else {
+            index++;
+            displayWord();
+        }
+
+        jTextField.setText("");
+    }
+
+    public static void main(String args[]) {
+        SwingUtilities.invokeLater(() -> new WordGuesss ());
+    }
+}
